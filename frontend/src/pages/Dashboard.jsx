@@ -5,8 +5,8 @@ import {
   TrophyIcon, 
   CurrencyDollarIcon, 
   VideoCameraIcon, 
-  LeafIcon,
-  TrendingUpIcon,
+  SparklesIcon,
+  ArrowTrendingUpIcon,
   ClockIcon,
   MapPinIcon
 } from '@heroicons/react/24/outline';
@@ -67,7 +67,7 @@ const Dashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center">
           <div className="mx-auto w-24 h-24 eco-gradient rounded-full flex items-center justify-center mb-6">
-            <LeafIcon className="w-12 h-12 text-white" />
+            <SparklesIcon className="w-12 h-12 text-white" />
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Welcome to EcoPoints
@@ -148,7 +148,7 @@ const Dashboard = () => {
         <div className="card">
           <div className="flex items-center">
             <div className="p-2 bg-yellow-100 rounded-lg">
-              <LeafIcon className="w-6 h-6 text-yellow-600" />
+              <SparklesIcon className="w-6 h-6 text-yellow-600" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Level</p>
@@ -201,7 +201,7 @@ const Dashboard = () => {
                 <VideoCameraIcon className="w-5 h-5 text-eco-green-600 mr-3" />
                 <span className="font-medium text-gray-900">Upload New Video</span>
               </div>
-              <TrendingUpIcon className="w-4 h-4 text-eco-green-600" />
+              <ArrowTrendingUpIcon className="w-4 h-4 text-eco-green-600" />
             </Link>
             
             <Link
@@ -212,7 +212,7 @@ const Dashboard = () => {
                 <ClockIcon className="w-5 h-5 text-blue-600 mr-3" />
                 <span className="font-medium text-gray-900">View Submissions</span>
               </div>
-              <TrendingUpIcon className="w-4 h-4 text-blue-600" />
+              <ArrowTrendingUpIcon className="w-4 h-4 text-blue-600" />
             </Link>
             
             <Link
@@ -223,7 +223,7 @@ const Dashboard = () => {
                 <CurrencyDollarIcon className="w-5 h-5 text-purple-600 mr-3" />
                 <span className="font-medium text-gray-900">Manage Wallet</span>
               </div>
-              <TrendingUpIcon className="w-4 h-4 text-purple-600" />
+              <ArrowTrendingUpIcon className="w-4 h-4 text-purple-600" />
             </Link>
           </div>
         </div>
