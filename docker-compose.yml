@@ -3,27 +3,21 @@ version: '3.8'
 services:
   # PostgreSQL Database
   postgres:
-    image: postgis/postgis:15-3.3
+    image: postgres:15-alpine
     container_name: eco_points_postgres
     environment:
-      POSTGRES_DB: eco_points_db
-      POSTGRES_USER: eco_points_user
-      POSTGRES_PASSWORD: eco_points_password
-      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+      POSTGRES_DB: eco_points
+      POSTGRES_USER: eco_user
+      POSTGRES_PASSWORD: eco_password
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./src/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./backend/database/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - eco_points_network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U eco_points_user -d eco_points_db"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - eco_network
 
-  # Redis Cache & Queue
+  # Redis for caching and queues
   redis:
     image: redis:7-alpine
     container_name: eco_points_redis
@@ -32,115 +26,74 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      - eco_points_network
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - eco_network
 
-  # Application
-  app:
+  # MinIO for S3-compatible object storage (local development)
+  minio:
+    image: minio/minio:latest
+    container_name: eco_points_minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - eco_network
+
+  # Backend API
+  backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
-    container_name: eco_points_app
+    container_name: eco_points_backend
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://eco_user:eco_password@postgres:5432/eco_points
+      REDIS_URL: redis://redis:6379
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: minioadmin
+      S3_SECRET_KEY: minioadmin123
+      S3_BUCKET: eco-points-videos
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+    depends_on:
+      - postgres
+      - redis
+      - minio
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - eco_network
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: eco_points_frontend
     ports:
       - "3000:3000"
     environment:
-      NODE_ENV: development
-      PORT: 3000
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_NAME: eco_points_db
-      DB_USER: eco_points_user
-      DB_PASSWORD: eco_points_password
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      JWT_SECRET: dev_jwt_secret_key_change_in_production
-      JWT_REFRESH_SECRET: dev_refresh_secret_key_change_in_production
-      JWT_EXPIRES_IN: 15m
-      JWT_REFRESH_EXPIRES_IN: 7d
-      AWS_REGION: us-east-1
-      AWS_ACCESS_KEY_ID: dev_access_key
-      AWS_SECRET_ACCESS_KEY: dev_secret_key
-      AWS_S3_BUCKET: eco-points-videos-dev
-      AWS_S3_BUCKET_THUMBNAILS: eco-points-thumbnails-dev
-      STRIPE_SECRET_KEY: sk_test_dev_key
-      STRIPE_WEBHOOK_SECRET: whsec_dev_webhook_secret
-      SMTP_HOST: smtp.gmail.com
-      SMTP_PORT: 587
-      SMTP_USER: dev@example.com
-      SMTP_PASS: dev_password
-      EMAIL_FROM: noreply@ecopoints.dev
-      TWILIO_ACCOUNT_SID: dev_account_sid
-      TWILIO_AUTH_TOKEN: dev_auth_token
-      TWILIO_PHONE_NUMBER: +1234567890
-      MAX_VIDEO_SIZE_MB: 100
-      MAX_VIDEO_DURATION_SEC: 300
-      MIN_VIDEO_DURATION_SEC: 10
-      THUMBNAIL_WIDTH: 320
-      THUMBNAIL_HEIGHT: 240
-      AUTO_APPROVE_THRESHOLD: 80
-      AUTO_REJECT_THRESHOLD: 30
-      MIN_GPS_ACCURACY_METERS: 50
-      MAX_SUBMISSIONS_PER_DAY: 10
-      POINTS_PER_APPROVED_SUBMISSION: 100
-      POINTS_TO_CASH_RATE: 0.01
-      RATE_LIMIT_WINDOW_MS: 900000
-      RATE_LIMIT_MAX_REQUESTS: 100
-      BCRYPT_ROUNDS: 12
-      SESSION_SECRET: dev_session_secret
-      LOG_LEVEL: debug
-      MAPBOX_ACCESS_TOKEN: dev_mapbox_token
-      ENABLE_ML_CHECKS: false
-      ENABLE_LIVENESS_DETECTION: false
-      ENABLE_VIRUS_SCANNING: false
-      ENABLE_PUSH_NOTIFICATIONS: false
+      NEXT_PUBLIC_API_URL: http://localhost:3001
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      - backend
     volumes:
-      - ./logs:/app/logs
-      - ./uploads:/app/uploads
+      - ./frontend:/app
+      - /app/node_modules
     networks:
-      - eco_points_network
-    restart: unless-stopped
-
-  # Adminer (Database management)
-  adminer:
-    image: adminer:latest
-    container_name: eco_points_adminer
-    ports:
-      - "8080:8080"
-    environment:
-      ADMINER_DEFAULT_SERVER: postgres
-    depends_on:
-      - postgres
-    networks:
-      - eco_points_network
-
-  # Redis Commander (Redis management)
-  redis-commander:
-    image: rediscommander/redis-commander:latest
-    container_name: eco_points_redis_commander
-    ports:
-      - "8081:8081"
-    environment:
-      REDIS_HOSTS: local:redis:6379
-    depends_on:
-      - redis
-    networks:
-      - eco_points_network
+      - eco_network
 
 volumes:
   postgres_data:
-    driver: local
   redis_data:
-    driver: local
+  minio_data:
 
 networks:
-  eco_points_network:
+  eco_network:
     driver: bridge
