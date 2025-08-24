@@ -12,15 +12,11 @@ import { dataSourceOptions } from './database/data-source';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { SubmissionsModule } from './modules/submissions/submissions.module';
-import { ModerationModule } from './modules/moderation/moderation.module';
-import { CashoutsModule } from './modules/cashouts/cashouts.module';
-import { PaymentsModule } from './modules/payments/payments.module';
-import { ReportsModule } from './modules/reports/reports.module';
+import { CashoutModule } from './modules/cashout/cashout.module';
+import { PaymentModule } from './modules/payment/payment.module';
 import { StorageModule } from './modules/storage/storage.module';
-import { NotificationsModule } from './modules/notifications/notifications.module';
 
-// Common modules
-import { CommonModule } from './common/common.module';
+
 
 @Module({
   imports: [
@@ -61,15 +57,11 @@ import { CommonModule } from './common/common.module';
     AuthModule,
     UsersModule,
     SubmissionsModule,
-    ModerationModule,
-    CashoutsModule,
-    PaymentsModule,
-    ReportsModule,
+    CashoutModule,
+    PaymentModule,
     StorageModule,
-    NotificationsModule,
     
-    // Common utilities
-    CommonModule,
+
   ],
 })
 export class AppModule {}
