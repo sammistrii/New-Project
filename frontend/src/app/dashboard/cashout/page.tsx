@@ -16,7 +16,12 @@ import toast from 'react-hot-toast';
 
 const cashoutSchema = z.object({
   points: z.number().min(500, 'Minimum cash-out is 500 points ($5.00)').max(100000, 'Maximum cash-out is 100,000 points ($1,000.00)'),
-  method: z.enum(['paypal', 'stripe', 'bank_transfer', 'crypto']),
+  method: z.enum([
+    // Indian Payment Methods
+    'google_pay', 'phonepe', 'paytm', 'bhim_upi', 'amazon_pay', 'whatsapp_pay', 'net_banking', 'card',
+    // International Payment Methods
+    'paypal', 'stripe', 'bank_transfer', 'crypto'
+  ]),
   destinationRef: z.string().min(1, 'Please provide payment destination'),
 });
 
@@ -29,6 +34,64 @@ interface Wallet {
 }
 
 const PAYMENT_METHODS = [
+  // Indian Payment Methods
+  {
+    id: 'google_pay',
+    name: 'Google Pay',
+    icon: CreditCardIcon,
+    description: 'Fast UPI transfer via Google Pay',
+    minAmount: 1,
+  },
+  {
+    id: 'phonepe',
+    name: 'PhonePe',
+    icon: CreditCardIcon,
+    description: 'Instant UPI transfer via PhonePe',
+    minAmount: 1,
+  },
+  {
+    id: 'paytm',
+    name: 'Paytm',
+    icon: CreditCardIcon,
+    description: 'Quick transfer via Paytm wallet/UPI',
+    minAmount: 1,
+  },
+  {
+    id: 'bhim_upi',
+    name: 'BHIM UPI',
+    icon: BanknotesIcon,
+    description: 'Direct UPI transfer via BHIM app',
+    minAmount: 1,
+  },
+  {
+    id: 'amazon_pay',
+    name: 'Amazon Pay',
+    icon: CreditCardIcon,
+    description: 'Secure UPI transfer via Amazon Pay',
+    minAmount: 1,
+  },
+  {
+    id: 'whatsapp_pay',
+    name: 'WhatsApp Pay',
+    icon: CreditCardIcon,
+    description: 'Easy UPI transfer via WhatsApp',
+    minAmount: 1,
+  },
+  {
+    id: 'net_banking',
+    name: 'Net Banking',
+    icon: BanknotesIcon,
+    description: 'Direct bank transfer via net banking',
+    minAmount: 10,
+  },
+  {
+    id: 'card',
+    name: 'Debit/Credit Card',
+    icon: CreditCardIcon,
+    description: 'Direct transfer to your card',
+    minAmount: 5,
+  },
+  // International Payment Methods
   {
     id: 'paypal',
     name: 'PayPal',
@@ -62,7 +125,7 @@ const PAYMENT_METHODS = [
 export default function CashoutPage() {
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedMethod, setSelectedMethod] = useState<string>('paypal');
+  const [selectedMethod, setSelectedMethod] = useState<string>('google_pay');
 
   const {
     register,
@@ -73,7 +136,7 @@ export default function CashoutPage() {
   } = useForm<CashoutFormData>({
     resolver: zodResolver(cashoutSchema),
     defaultValues: {
-      method: 'paypal',
+      method: 'google_pay',
     },
   });
 
@@ -162,6 +225,24 @@ export default function CashoutPage() {
 
   const getDestinationPlaceholder = (method: string) => {
     switch (method) {
+      // Indian Payment Methods
+      case 'google_pay':
+        return 'Enter your Google Pay UPI ID (e.g., username@okicici)';
+      case 'phonepe':
+        return 'Enter your PhonePe UPI ID (e.g., username@ybl)';
+      case 'paytm':
+        return 'Enter your Paytm UPI ID (e.g., username@paytm)';
+      case 'bhim_upi':
+        return 'Enter your BHIM UPI ID (e.g., username@upi)';
+      case 'amazon_pay':
+        return 'Enter your Amazon Pay UPI ID (e.g., username@apl)';
+      case 'whatsapp_pay':
+        return 'Enter your WhatsApp Pay UPI ID (e.g., username@ybl)';
+      case 'net_banking':
+        return 'Enter your bank account number and IFSC code';
+      case 'card':
+        return 'Enter your card number (16 digits)';
+      // International Payment Methods
       case 'paypal':
         return 'Enter your PayPal email address';
       case 'stripe':

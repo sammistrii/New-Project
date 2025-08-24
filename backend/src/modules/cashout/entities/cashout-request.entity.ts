@@ -21,6 +21,16 @@ export enum CashoutStatus {
 }
 
 export enum PayoutMethod {
+  // Indian Payment Methods
+  GOOGLE_PAY = 'google_pay',
+  PHONEPE = 'phonepe',
+  PAYTM = 'paytm',
+  BHIM_UPI = 'bhim_upi',
+  AMAZON_PAY = 'amazon_pay',
+  WHATSAPP_PAY = 'whatsapp_pay',
+  NET_BANKING = 'net_banking',
+  CARD = 'card',
+  // International Payment Methods
   BANK_TRANSFER = 'bank_transfer',
   PAYPAL = 'paypal',
   STRIPE = 'stripe',

@@ -57,10 +57,18 @@ S3_BUCKET=eco-points
 S3_REGION=us-east-1
 S3_FORCE_PATH_STYLE=true
 
-# Payment Gateway Keys (Add your actual keys)
+# International Payment Gateway Keys (Add your actual keys)
 STRIPE_SECRET_KEY=sk_test_your_stripe_key
 PAYPAL_CLIENT_ID=your_paypal_client_id
 PAYPAL_CLIENT_SECRET=your_paypal_secret
+
+# Indian Payment Gateway Keys (Add your actual keys)
+GOOGLE_PAY_MERCHANT_ID=your_google_pay_merchant_id
+PHONEPE_MERCHANT_ID=your_phonepe_merchant_id
+PAYTM_MERCHANT_ID=your_paytm_merchant_id
+BHIM_UPI_MERCHANT_ID=your_bhim_merchant_id
+AMAZON_PAY_MERCHANT_ID=your_amazon_pay_merchant_id
+WHATSAPP_PAY_MERCHANT_ID=your_whatsapp_pay_merchant_id
 
 # Email Configuration
 SMTP_HOST=smtp.gmail.com
@@ -300,15 +308,38 @@ curl https://eco-points-frontend.onrender.com
 - Monitor service health and metrics
 - Use built-in health check endpoints
 
+## 🇮🇳 Indian Payment Methods
+
+Your Eco-Points System now supports all major Indian payment methods:
+
+### **UPI-Based Services**
+- **Google Pay** - Fast UPI transfers
+- **PhonePe** - Instant UPI transfers  
+- **Paytm** - Wallet and UPI transfers
+- **BHIM UPI** - Direct NPCI UPI transfers
+- **Amazon Pay** - Secure UPI transfers
+- **WhatsApp Pay** - Easy UPI transfers
+
+### **Traditional Banking**
+- **Net Banking** - Direct bank transfers (HDFC, SBI, ICICI, etc.)
+- **Debit/Credit Cards** - Direct card transfers
+
+### **Integration Notes**
+- All Indian payment methods use UPI for instant transfers
+- Minimum cash-out amount: ₹1 (1 point = ₹0.01)
+- UPI IDs follow format: `username@bankcode` (e.g., `john@okicici`)
+- Supports all major Indian banks and payment apps
+
 ## 🎉 Next Steps
 
 After successful deployment:
 
 1. **Test All Features**: Upload videos, process submissions, test payments
-2. **Configure Monitoring**: Set up alerts for service health
-3. **Set Up Domains**: Configure custom domain names
-4. **Enable Analytics**: Monitor usage and performance
-5. **Plan Scaling**: Prepare for increased traffic
+2. **Configure Indian Payment Gateways**: Set up merchant accounts
+3. **Configure Monitoring**: Set up alerts for service health
+4. **Set Up Domains**: Configure custom domain names
+5. **Enable Analytics**: Monitor usage and performance
+6. **Plan Scaling**: Prepare for increased traffic
 
 ---
 
