@@ -5,17 +5,12 @@ services:
     env: postgresql
     plan: free
     ipAllowList: []
-    maxConnections: 100
-    userEnvVar: POSTGRES_USER
-    databaseName: eco_points
-    databaseUser: eco_points_user
 
   # Redis for caching and queues
   - type: redis
     name: eco-points-redis
     plan: free
     ipAllowList: []
-    maxmemoryPolicy: allkeys-lru
 
   # Backend API (NestJS)
   - type: web
@@ -27,6 +22,8 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 3001
       - key: DATABASE_URL
         fromDatabase:
           name: eco-points-db
@@ -41,7 +38,7 @@ services:
       - key: JWT_REFRESH_SECRET
         generateValue: true
       - key: S3_ENDPOINT
-        value: ${RENDER_EXTERNAL_URL}/minio
+        value: https://eco-points-minio.onrender.com
       - key: S3_ACCESS_KEY
         value: minioadmin
       - key: S3_SECRET_KEY
@@ -68,6 +65,8 @@ services:
         value: your-app-password
       - key: SMTP_FROM
         value: your-email@gmail.com
+      - key: FRONTEND_URL
+        value: https://eco-points-frontend.onrender.com
 
   # Frontend (Next.js)
   - type: web
@@ -79,6 +78,8 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 3000
       - key: NEXT_PUBLIC_API_URL
         value: https://eco-points-backend.onrender.com
       - key: NEXT_PUBLIC_APP_URL
@@ -95,9 +96,13 @@ services:
     plan: free
     dockerfilePath: ./Dockerfile.minio
     envVars:
+      - key: PORT
+        value: 9000
       - key: MINIO_ROOT_USER
         value: minioadmin
       - key: MINIO_ROOT_PASSWORD
         value: minioadmin123
       - key: MINIO_BUCKET
         value: eco-points
+      - key: MINIO_CONSOLE_PORT
+        value: 9001
