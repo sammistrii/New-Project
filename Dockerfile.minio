@@ -1,0 +1,14 @@
+FROM minio/minio:latest
+
+# Create the eco-points bucket
+RUN mkdir -p /data/eco-points
+
+# Set environment variables
+ENV MINIO_ROOT_USER=minioadmin
+ENV MINIO_ROOT_PASSWORD=minioadmin123
+
+# Expose port 9000
+EXPOSE 9000
+
+# Start MinIO server
+CMD ["server", "/data", "--console-address", ":9001"]

@@ -1,0 +1,103 @@
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: eco-points-db
+    env: postgresql
+    plan: free
+    ipAllowList: []
+    maxConnections: 100
+    userEnvVar: POSTGRES_USER
+    databaseName: eco_points
+    databaseUser: eco_points_user
+
+  # Redis for caching and queues
+  - type: redis
+    name: eco-points-redis
+    plan: free
+    ipAllowList: []
+    maxmemoryPolicy: allkeys-lru
+
+  # Backend API (NestJS)
+  - type: web
+    name: eco-points-backend
+    env: node
+    plan: free
+    buildCommand: cd backend && npm install && npm run build
+    startCommand: cd backend && npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: eco-points-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: eco-points-redis
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: S3_ENDPOINT
+        value: ${RENDER_EXTERNAL_URL}/minio
+      - key: S3_ACCESS_KEY
+        value: minioadmin
+      - key: S3_SECRET_KEY
+        value: minioadmin123
+      - key: S3_BUCKET
+        value: eco-points
+      - key: S3_REGION
+        value: us-east-1
+      - key: S3_FORCE_PATH_STYLE
+        value: true
+      - key: STRIPE_SECRET_KEY
+        value: sk_test_... # Add your Stripe test key
+      - key: PAYPAL_CLIENT_ID
+        value: test_client_id # Add your PayPal test credentials
+      - key: PAYPAL_CLIENT_SECRET
+        value: test_secret # Add your PayPal test credentials
+      - key: SMTP_HOST
+        value: smtp.gmail.com # Configure your email service
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        value: your-email@gmail.com
+      - key: SMTP_PASS
+        value: your-app-password
+      - key: SMTP_FROM
+        value: your-email@gmail.com
+
+  # Frontend (Next.js)
+  - type: web
+    name: eco-points-frontend
+    env: node
+    plan: free
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        value: https://eco-points-backend.onrender.com
+      - key: NEXT_PUBLIC_APP_URL
+        value: https://eco-points-frontend.onrender.com
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://eco-points-backend.onrender.com/api/*
+
+  # MinIO Object Storage (S3-compatible)
+  - type: web
+    name: eco-points-minio
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile.minio
+    envVars:
+      - key: MINIO_ROOT_USER
+        value: minioadmin
+      - key: MINIO_ROOT_PASSWORD
+        value: minioadmin123
+      - key: MINIO_BUCKET
+        value: eco-points
