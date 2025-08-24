@@ -37,7 +37,7 @@
     "@nestjs/websockets": "^10.0.0",
     "@nestjs/platform-socket.io": "^10.0.0",
     "typeorm": "^0.3.17",
-    "postgres": "^3.4.3",
+    "pg": "^8.11.3",
     "redis": "^4.6.10",
     "bull": "^4.11.5",
     "passport": "^0.6.0",

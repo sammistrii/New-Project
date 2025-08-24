@@ -71,9 +71,9 @@ export default function DashboardLayout({
   ];
 
   const adminNavigation = [
-    { name: 'Moderation Queue', href: '/dashboard/moderation', icon: VideoCameraIcon },
-    { name: 'User Management', href: '/dashboard/users', icon: UserIcon },
-    { name: 'Analytics', href: '/dashboard/analytics', icon: ChartBarIcon },
+    { name: 'Moderation Queue', href: '/dashboard/admin/moderation', icon: VideoCameraIcon },
+    { name: 'Cashout Management', href: '/dashboard/admin/cashouts', icon: ChartBarIcon },
+    { name: 'Analytics', href: '/dashboard/admin/analytics', icon: ChartBarIcon },
   ];
 
   if (isLoading) {

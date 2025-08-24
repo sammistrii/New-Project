@@ -15,6 +15,9 @@ import { SubmissionsModule } from './modules/submissions/submissions.module';
 import { CashoutModule } from './modules/cashout/cashout.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { StorageModule } from './modules/storage/storage.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { WebhooksModule } from './modules/webhooks/webhooks.module';
 
 
 
@@ -53,13 +56,16 @@ import { StorageModule } from './modules/storage/storage.module';
     // Scheduled tasks
     ScheduleModule.forRoot(),
     
-    // Feature modules
-    AuthModule,
-    UsersModule,
-    SubmissionsModule,
-    CashoutModule,
-    PaymentModule,
-    StorageModule,
+              // Feature modules
+          AuthModule,
+          UsersModule,
+          SubmissionsModule,
+          CashoutModule,
+          PaymentModule,
+          StorageModule,
+          AdminModule,
+          NotificationsModule,
+          WebhooksModule,
     
 
   ],
