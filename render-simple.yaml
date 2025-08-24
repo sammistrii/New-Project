@@ -47,37 +47,6 @@ services:
         value: us-east-1
       - key: S3_FORCE_PATH_STYLE
         value: true
-      # International Payment Gateways
-      - key: STRIPE_SECRET_KEY
-        value: sk_test_... # Add your Stripe test key
-      - key: PAYPAL_CLIENT_ID
-        value: test_client_id # Add your PayPal test credentials
-      - key: PAYPAL_CLIENT_SECRET
-        value: test_secret # Add your PayPal test credentials
-      
-      # Indian Payment Gateways
-      - key: GOOGLE_PAY_MERCHANT_ID
-        value: your_google_pay_merchant_id
-      - key: PHONEPE_MERCHANT_ID
-        value: your_phonepe_merchant_id
-      - key: PAYTM_MERCHANT_ID
-        value: your_paytm_merchant_id
-      - key: BHIM_UPI_MERCHANT_ID
-        value: your_bhim_merchant_id
-      - key: AMAZON_PAY_MERCHANT_ID
-        value: your_amazon_pay_merchant_id
-      - key: WHATSAPP_PAY_MERCHANT_ID
-        value: your_whatsapp_pay_merchant_id
-      - key: SMTP_HOST
-        value: smtp.gmail.com # Configure your email service
-      - key: SMTP_PORT
-        value: 587
-      - key: SMTP_USER
-        value: your-email@gmail.com
-      - key: SMTP_PASS
-        value: your-app-password
-      - key: SMTP_FROM
-        value: your-email@gmail.com
       - key: FRONTEND_URL
         value: https://eco-points-frontend.onrender.com
 
